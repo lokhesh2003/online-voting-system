@@ -5,6 +5,20 @@ import { ScreenShare, CheckSquare } from 'lucide-react';
 export default function Vote() {
   const [candidates, setCandidates] = useState([]);
   const [userId, setUserId] = useState(1); // Default to 1
+  const [role, setRole] = useState('USER');
+
+  useEffect(() => {
+    const raw = localStorage.getItem('activeUser');
+    if (raw) {
+      try {
+        const user = JSON.parse(raw);
+        if (user?.id) setUserId(user.id);
+        setRole(user?.role || 'USER');
+      } catch {
+        // no-op
+      }
+    }
+  }, []);
 
   const fetchCandidates = () => {
     axios.get("http://localhost:8080/api/vote/candidates")
@@ -35,7 +49,7 @@ export default function Vote() {
   return (
     <div>
       <div className="page-header">
-        <ScreenShare className="icon" size={20} /> USER DASHBOARD
+        <ScreenShare className="icon" size={20} /> {role === 'ADMIN' ? 'ADMIN PANEL' : 'VOTER DASHBOARD'}
       </div>
 
       <div className="panel" style={{ maxWidth: '600px', margin: '20px auto' }}>

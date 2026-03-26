@@ -9,27 +9,27 @@ export default function Sidebar() {
       </div>
       <ul className="sidebar-nav">
         <li>
-          <NavLink to="/dashboard" className={({isActive}) => isActive ? "active" : ""}>
+          <NavLink to="/admin/dashboard" className={({isActive}) => isActive ? "active" : ""}>
             <LayoutDashboard /> Admin Dashboard
           </NavLink>
         </li>
         <li>
-          <NavLink to="/voters" className={({isActive}) => isActive ? "active" : ""}>
+          <NavLink to="/admin/voters" className={({isActive}) => isActive ? "active" : ""}>
             <Users /> Voters
           </NavLink>
         </li>
         <li>
-          <NavLink to="/candidates" className={({isActive}) => isActive ? "active" : ""}>
+          <NavLink to="/admin/candidates" className={({isActive}) => isActive ? "active" : ""}>
             <UserSquare2 /> Candidates
           </NavLink>
         </li>
         <li>
-          <NavLink to="/vote" className={({isActive}) => isActive ? "active" : ""}>
+          <NavLink to="/admin/vote" className={({isActive}) => isActive ? "active" : ""}>
             <CheckSquare /> Voting Page
           </NavLink>
         </li>
         <li>
-          <NavLink to="/results" className={({isActive}) => isActive ? "active" : ""}>
+          <NavLink to="/admin/results" className={({isActive}) => isActive ? "active" : ""}>
             <BarChart3 /> Voting Result
           </NavLink>
         </li>

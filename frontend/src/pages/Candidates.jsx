@@ -2,15 +2,23 @@ import { ScreenShare, Users, Box, Mail, Edit3, Trash2 } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 
+const getErrorMessage = (err) => {
+  if (typeof err?.response?.data === 'string') return err.response.data;
+  if (err?.response?.data?.message) return err.response.data.message;
+  if (err?.message) return err.message;
+  return 'Operation failed';
+};
+
 export default function Candidates() {
   const [data, setData] = useState([]);
   const [showForm, setShowForm] = useState(false);
+  const [message, setMessage] = useState('');
   const [formData, setFormData] = useState({ id: null, name: '', party: '', city: '', mobileNo: '', email: '', photoBase64: '' });
 
   const fetchCandidates = () => {
-    axios.get("http://localhost:8080/api/vote/candidates")
+    axios.get("/api/vote/candidates")
       .then(res => setData(res.data))
-      .catch(err => console.error("Error fetching candidates:", err));
+      .catch(err => setMessage("Error fetching candidates: " + getErrorMessage(err)));
   };
 
   useEffect(() => {
@@ -32,28 +40,30 @@ export default function Candidates() {
     e.preventDefault();
     if (formData.id) {
       // Edit
-      axios.put(`http://localhost:8080/api/admin/candidates/${formData.id}`, formData)
+      axios.put(`/api/admin/candidates/${formData.id}`, formData)
         .then(() => {
+          setMessage('Candidate updated successfully.');
           fetchCandidates();
           setShowForm(false);
         })
-        .catch(err => console.error(err));
+        .catch(err => setMessage('Update failed: ' + getErrorMessage(err)));
     } else {
       // Add
-      axios.post("http://localhost:8080/api/admin/candidates", formData)
+      axios.post("/api/admin/candidates", formData)
         .then(() => {
+          setMessage('Candidate created successfully.');
           fetchCandidates();
           setShowForm(false);
         })
-        .catch(err => console.error(err));
+        .catch(err => setMessage('Creation failed: ' + getErrorMessage(err)));
     }
   };
 
   const handleDelete = (id) => {
     if (window.confirm("Are you sure you want to delete this candidate?")) {
-      axios.delete(`http://localhost:8080/api/admin/candidates/${id}`)
-        .then(() => fetchCandidates())
-        .catch(err => console.error(err));
+      axios.delete(`/api/admin/candidates/${id}`)
+        .then(() => { setMessage('Candidate deleted successfully.'); fetchCandidates(); })
+        .catch(err => setMessage('Delete failed: ' + getErrorMessage(err)));
     }
   };
 
@@ -79,6 +89,7 @@ export default function Candidates() {
         </div>
         
         <div style={{ padding: '15px 20px' }}>
+          {message && <div style={{ padding: '8px', background: '#e9f5ff', border: '1px solid #c5e0ff', marginBottom: '12px' }}>{message}</div>}
           {!showForm && (
              <button onClick={() => { resetForm(); setShowForm(true); }} className="btn-primary" style={{ padding: '8px 16px', border: 'none', borderRadius: '4px', cursor: 'pointer', background: '#3498db', color: 'white' }}>Create New</button>
           )}
